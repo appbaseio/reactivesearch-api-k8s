@@ -1,0 +1,36 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1beta1
+kind: Elasticsearch
+metadata:
+  name: elasticsearch
+spec:
+  version: 7.4.2
+  nodeSets:
+    - name: masters
+      count: 1
+      resources:
+        requests:
+          memory: 1.5Gi
+          cpu: 0.5
+        limits:
+          memory: 2Gi
+          cpu: 1
+      config:
+        node.master: true
+        node.data: true
+        node.ingest: true
+        node.store.allow_mmap: false
+  # request 2Gi of persistent data storage for pods in this topology element
+  volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 2Gi
+        storageClassName: standard
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true

@@ -1,0 +1,51 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  generation: 1
+  name: arc
+spec:
+  selector:
+    matchLabels:
+      app: arc
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: arc
+    spec:
+      containers:
+        - env:
+            - name: USERNAME
+              value: admin
+            - name: PASSWORD
+              value: admin
+            - name: ES_CLUSTER_URL
+              value: "http://elastic:qxmfsnv9mh6qcf84kbfm8kld@elasticsearch-es-http:9200/"
+            - name: ARC_ID
+              value: 4abf32e2-9105-418e-9b4d-7a12e48f7396
+          image: appbaseio/arc:7.8.3
+          imagePullPolicy: IfNotPresent
+          name: arc
+          ports:
+            - containerPort: 8000
+              name: http
+              protocol: TCP
+  replicas: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: arc
+  labels:
+    app: arc
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8000
+  selector:
+    app: arc
