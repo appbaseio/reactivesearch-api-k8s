@@ -1,71 +1,76 @@
 # K8S setup for ARC + ElasticSearch
 
-This demonstrates how you can use ElasticSearch kubernetes operator, i.e. [Elastic Cloud on Kubernetes (ECK)](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-overview.html) with [Arc](https://arc-site.netlify.com/)
+[Arc](https://arc-site.netlify.com) acts as an API gateway for ElasticSearch and augments the search experience by offering:
 
-> Quick start guide below enables you to quickly configure ElasticSearch and Arc on local kubernetes. For the production ready configuration of ElasticSearch please go through [ECK docs](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-overview.html) and update `eck_config.yaml` accordingly.
+- Out-of-the-box search and click analytics,
+- Fine-grained security controls but without any restrictions (Apache 2.0 licensed),
+- A superior development experience: Import data via GUI, build and test search relevancy visually with no code, set query rules and advanced query suggestions.
+
+This example demonstrates how you can deploy ElasticSearch kubernetes operator, i.e. [Elastic Cloud on Kubernetes (ECK)](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-overview.html) with [Arc](https://arc-site.netlify.com/) on any kubernetes cluster.
 
 ## Quick Start
 
-- Get Arc ID following the steps mentioned [here](https://docs.appbase.io/docs/hosting/BYOC/#how-to-create-arc-instance)
+> Note: Steps described here assumes a kubernetes installation on the system. This will allow you to execute `kubectl` commands.
 
-- Start minikube with approximately 3GB of RAM (Required by ElasticSearch)
+- **Step 1 -** Create kubernetes cluster with your favourite provider. Here are some of the examples
 
-```bash
-minikube start --memory 3096
-```
+  - [Google Cloud](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-cluster)
+  - [AWS](https://aws.amazon.com/kubernetes/)
+  - [Azure](https://azure.microsoft.com/en-in/services/kubernetes-service/)
+  - [Digital Ocean](https://www.digitalocean.com/products/kubernetes/)
 
-- Get custom resources for ECK k8s operator
+- **Step 2 -** Connect to cluster using CLI, so that you can run `kubectl` commands
 
-```bash
-kubectl apply -f https://download.elastic.co/downloads/eck/1.0.0-beta1/all-in-one.yaml
-```
+  **Example:**
 
-- Change the number of master, data nodes required by your application in `eck_config.yaml`. For more details you can check Elastic Cloud on Kubernetes [docs](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-node-configuration.html)
+  ```bash
+  gcloud container clusters get-credentials cluster-name --zone us-east1-b --project test
+  ```
 
-- Change the volume space required by your application in `eck_config.yaml` L42
+- **Step 3 -** Get custom resources for ECK k8s operator
 
-- Change the memory required in `eck_config.yaml` L10
+  ```bash
+  kubectl apply -f https://download.elastic.co/downloads/eck/1.0.0-beta1/all-in-one.yaml
+  ```
 
-* Deploy elasticsearch cluster
+- **Step 4 -** Deploy ElasticSearch
 
-```bash
-kubectl apply -f eck_config.yaml
-```
+  > **Note:** ElasticSearch configuration file below has 1 node cluster with 5gb storage, 4gb memory and 2 core CPU limit. You can clone and update configuration in [eck_config](https://github.com/appbaseio/arc-k8s/blob/master/eck_config.yaml) as per the requirement. For more configuration options you can check [Elastic Cloud on Kubernetes docs](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-overview.html)
 
-- Monitor cluster health & creation process
+  ```bash
+  kubectl apply -f https://raw.githubusercontent.com/appbaseio/arc-k8s/master/eck_config.yaml
+  ```
 
-```bash
-kubectl get elasticsearch
+- **Step 5 -** Monitor cluster health & creation process
 
-```
+  ```bash
+  kubectl get elasticsearch
 
-> Wait until health shows up as `green`. It can take upto 3-4 min.
+  ```
 
-- Get password for the deployed ES
+  > **Note:** Wait until health shows up as `green`. It can take upto 3-4 min.
 
-```bash
-kubectl get secret elasticsearch-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode
-```
+- **Step 6 -** Get password for ElasticSearch and update in [arc.yaml](https://github.com/appbaseio/arc-k8s/blob/master/arc.yaml)
 
-- Change password for ElasticSearch URL in `arc.yaml` L28
+  ```bash
+  kubectl get secret elasticsearch-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode
+  ```
 
-- Update env variables, set ARC ID: obtained in step 1
+  ![arc-cluster-env](https://i.imgur.com/4OXfxQC.png)
 
-- Set username and password for providing basic auth to Arc url.
+- **Step 7 -** Obtain Arc ID by following the steps mentioned [here](https://docs.appbase.io/docs/hosting/BYOC/#how-to-create-arc-instance)
 
-- Deploy arc
+- **Step 8 -** Update env variables, set ARC ID: obtained in step 7 and update desired username and password. This credentials will act as master credentials for Arc ARC.
+  ![arc-env](https://i.imgur.com/cC7sxUP.png)
 
-```bash
+- **Step 9 -** Deploy arc
 
-kubectl apply -f arc.yaml
-```
+  ```bash
 
-- Nginx is used to proxy Arc, so that we can enable TLS for ARC URL. Current example comes with Self Signed certificate, but you can update the values with actual certificate, by encoding the content of `.crt` and `.key` files into base64 and replacing the values in `nginx.yaml` L7-L9.
+  kubectl apply -f arc.yaml
+  ```
 
-- Create nginx ingress
+- **Step 10 -** Update tls certificate
+  Nginx is used to proxy Arc, so that we can enable TLS for ARC URL. This example comes with Self Signed certificate, but you can update the values with actual certificate, by encoding the content of `.crt` and `.key` files into base64 and replacing the values in `nginx.yaml`.
 
-```bash
-kubectl apply -f nginx.yaml
-```
-
-For more information on how to configure elasticsearch + plugins, you can check Elastic Cloud on Kubernetes (ECK) [docs](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-overview.html)
+  ![nginx-cert](https://i.imgur.com/6UkZwMC.png)
