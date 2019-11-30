@@ -25,9 +25,9 @@ spec:
             - name: PASSWORD
               value: admin
             - name: ARC_ID
-              value: 8f027417-3f0e-43a8-b24d-96bfe808ed35
+              value: YOUR_ARC_ID
             - name: ES_CLUSTER_URL
-              value: "http://elastic:whk9w2p28b2vg7mzmhttkxcl@elasticsearch-es-http:9200/"
+              value: "http://elastic:PASSWORD@elasticsearch-es-http:9200/"
           image: appbaseio/arc:7.8.3
           imagePullPolicy: IfNotPresent
           name: arc
@@ -267,7 +267,10 @@ spec:
               serviceName: arc
               servicePort: 8000
             path: /
+      # host: es.mydomain.com
   tls:
+    #- hosts:
+    #  - es.mydomain.com
     - secretName: ssl
 ---
 apiVersion: v1
