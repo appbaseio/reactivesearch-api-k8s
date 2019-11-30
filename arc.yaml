@@ -25,9 +25,9 @@ spec:
             - name: PASSWORD
               value: admin
             - name: ARC_ID
-              value: YOUR_ARC_ID
+              value: 8f027417-3f0e-43a8-b24d-96bfe808ed35
             - name: ES_CLUSTER_URL
-              value: "http://elastic:PASSWORD@elasticsearch-es-http:9200/"
+              value: "http://elastic:whk9w2p28b2vg7mzmhttkxcl@elasticsearch-es-http:9200/"
           image: appbaseio/arc:7.8.3
           imagePullPolicy: IfNotPresent
           name: arc
@@ -64,6 +64,19 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: ingress-nginx
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: nginx-service-account
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: ingress-nginx
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -122,6 +135,25 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: default-http-backend
+  name: default-http-backend
+  namespace: ingress-nginx
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: default-http-backend
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -207,8 +239,6 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
-      serviceAccount: ingress-nginx
-      serviceAccountName: ingress-nginx
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
