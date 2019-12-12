@@ -10,7 +10,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 
 ## Quick Start
 
-> Note: Steps described here assumes a kubernetes installation on the system. This will allow you to execute `kubectl` commands.
+> Note: Steps described here assumes a [kubernetes](https://kubernetes.io/docs/tasks/tools/install-kubectl/) installation on the system. This will allow you to execute `kubectl` commands.
 
 - **Step 1 -** Create kubernetes cluster with your favourite provider. Here are some of the well known Kubernetes Cluster providers.
 
@@ -22,7 +22,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
     _Here is an example on how you can create a cluster on Google Cloud._
 
 
-    >_Note: Here we assume that you have `gcloud` sdk installed on your machine, if not you can install from here. Also you have a project on Google Cloud with Kubernetes Engine enabled_
+    >_Note: We assume that you have `gcloud` sdk installed on your machine, if not you can install from [here](https://cloud.google.com/sdk/install). Also you have a project on [Google Cloud](https://console.cloud.google.com/) with [Kubernetes Engine](https://console.cloud.google.com/apis/library/container.googleapis.com?q=kubernetes%20engine&_ga=2.12989943.-1532196267.1571335381) enabled_
 
     _1. Login and Initialized Google Cloud_
 
