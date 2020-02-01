@@ -68,32 +68,35 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
       nodeSets:
       - name: default
         count: 1
-        resources:
-            requests:
-                memory: 1.5Gi
-                cpu: 1
-            limits:
-                memory: 3Gi
-                cpu: 2
         config:
-            node.master: true
-            node.data: true
-            node.ingest: true
-            node.store.allow_mmap: false
+          node.master: true
+          node.data: true
+          node.ingest: true
+          node.store.allow_mmap: false
         volumeClaimTemplates:
         - metadata:
             name: elasticsearch-data
-            spec:
-                accessModes:
-                - ReadWriteOnce
-                resources:
-                    requests:
-                        storeage: 10Gi
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 5Gi
             storageClassName: standard
-        http:
-            tls:
-                selfSignedCertificate:
-                    disabled: true
+        podTemplate:
+          spec:
+            containers:
+            - name: elasticsearch
+              env:
+              - name: ES_JAVA_OPTS
+                value: -Xms2g -Xmx2g
+              resources:
+                requests:
+                  memory: 4Gi
+                  cpu: 0.5
+                limits:
+                  memory: 4Gi
+                  cpu: 2
     EOF
     ```
 
