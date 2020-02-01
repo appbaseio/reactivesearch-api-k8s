@@ -65,6 +65,10 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
         name: elasticsearch
     spec:
       version: 7.5.2
+      http:
+        tls:
+          selfSignedCertificate:
+            disabled: true
       nodeSets:
       - name: default
         count: 1
