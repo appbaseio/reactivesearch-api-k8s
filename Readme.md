@@ -231,39 +231,38 @@ Follow the steps listed below to successfully create an Arc instance.
     You can replace domain name in the following command and execute it to make sure you can access services using your domain name instead of IP address
 
     ```bash
-    cat <<EOF | kubectl apply -f -
     apiVersion: extensions/v1beta1
     kind: Ingress
     metadata:
-    annotations:
+      annotations:
         kubernetes.io/ingress.class: nginx
         kubernetes.io/tls-acme: "false"
         nginx.ingress.kubernetes.io/configuration-snippet: |
-        add_header 'access-control-expose-headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,X-Search-Id' always;
+          add_header 'access-control-expose-headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,X-Search-Id' always;
         nginx.ingress.kubernetes.io/cors-allow-credentials: "false"
-        nginx.ingress.kubernetes.io/cors-allow-headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Search-Id,X-Search-Click,X-Search-ClickPosition,X-Search-Conversion,X-Search-Query,X-Search-Filters,X-Request-Tag,X-Query-Tag,X-Search-State
+        nginx.ingress.kubernetes.io/cors-allow-headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Search-Id,X-Search-Click,X-Search-ClickPosition,X-Search-Suggestions-Click,X-Search-Suggestions-ClickPosition,X-Search-Conversion,X-Search-Query,X-Search-Filters,X-Request-Tag,X-Query-Tag,X-Search-State,X-Search-CustomEvent,X-User-Id
         nginx.ingress.kubernetes.io/cors-allow-methods:
-        GET, PUT, POST, DELETE, PATCH,
-        OPTIONS, HEAD
+          GET, PUT, POST, DELETE, PATCH,
+          OPTIONS, HEAD
         nginx.ingress.kubernetes.io/enable-cors: "true"
         nginx.ingress.kubernetes.io/proxy-body-size: 100m
         nginx.ingress.kubernetes.io/rewrite-target: /
         nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    generation: 2
-    name: arc-ingress
-    namespace: default
+      generation: 2
+      name: arc-ingress
+      namespace: default
     spec:
-    rules:
+      rules:
         - http:
             paths:
-            - backend:
-                serviceName: arc
-                servicePort: 8000
+              - backend:
+                  serviceName: arc
+                  servicePort: 8000
                 path: /
-        host: YOUR_DOMAIN
-    tls:
+          # host: es.mydomain.com
+      tls:
         - hosts:
-            - YOUR_DOMAIN
+          - es.mydomain.com
         - secretName: ssl
     EOF
     ```
