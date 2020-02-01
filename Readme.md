@@ -197,7 +197,7 @@ Follow the steps listed below to successfully create an Arc instance.
                   value: YOUR_ARC_ID
                 - name: ES_CLUSTER_URL
                   value: "http://elastic:PASSWORD@elasticsearch-es-http:9200/"
-              image: appbaseio/arc:7.10.0
+              image: appbaseio/arc:7.15.0
               imagePullPolicy: IfNotPresent
               name: arc
               ports:
