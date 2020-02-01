@@ -42,6 +42,8 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
     _Once the cluster is created you will get cluster IP + status in output._
 
     ![](https://i.imgur.com/yq9gS3Y.png)
+    
+    >_Note: For GKE clusters you will need to have cluster admin role added. Following is the command: `kubectl create clusterrolebinding cluster-admin-binding --clusterrole cluster-admin`_
 
 - **Step 2 -** Get custom resources for ECK k8s operator
 
