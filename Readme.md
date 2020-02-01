@@ -48,7 +48,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 - **Step 2 -** Get custom resources for ECK k8s operator
 
     ```bash
-    kubectl apply -f https://download.elastic.co/downloads/eck/1.0.0-beta1/all-in-one.yaml
+    kubectl apply -f https://download.elastic.co/downloads/eck/1.0.0/all-in-one.yaml
     ```
 
     ![](https://i.imgur.com/yUX4pYx.png)
