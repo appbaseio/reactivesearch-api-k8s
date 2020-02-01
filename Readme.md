@@ -167,40 +167,40 @@ Follow the steps listed below to successfully create an Arc instance.
     apiVersion: apps/v1
     kind: Deployment
     metadata:
-    annotations:
+      annotations:
         deployment.kubernetes.io/revision: "1"
-    generation: 1
-    name: arc
+      generation: 1
+      name: arc
     spec:
-    selector:
+      selector:
         matchLabels:
-        app: arc
-    strategy:
+          app: arc
+      strategy:
         type: RollingUpdate
-    template:
+      template:
         metadata:
-        creationTimestamp: null
-        labels:
+          creationTimestamp: null
+          labels:
             app: arc
         spec:
-        containers:
+          containers:
             - env:
                 - name: USERNAME
-                value: admin
+                  value: admin
                 - name: PASSWORD
-                value: admin
+                  value: admin
                 - name: ARC_ID
-                value: YOUR_ARC_ID
+                  value: YOUR_ARC_ID
                 - name: ES_CLUSTER_URL
-                value: "http://elastic:PASSWORD@elasticsearch-es-http:9200/"
-            image: appbaseio/arc:7.8.3
-            imagePullPolicy: IfNotPresent
-            name: arc
-            ports:
+                  value: "http://elastic:PASSWORD@elasticsearch-es-http:9200/"
+              image: appbaseio/arc:7.10.0
+              imagePullPolicy: IfNotPresent
+              name: arc
+              ports:
                 - containerPort: 8000
-                name: http
-                protocol: TCP
-    replicas: 1
+                  name: http
+                  protocol: TCP
+      replicas: 1
     EOF
     ```
     
