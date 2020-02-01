@@ -96,10 +96,10 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
                 value: -Xms2g -Xmx2g
               resources:
                 requests:
-                  memory: 4Gi
+                  memory: 1.5Gi
                   cpu: 0.5
                 limits:
-                  memory: 4Gi
+                  memory: 2Gi
                   cpu: 2
     EOF
     ```
