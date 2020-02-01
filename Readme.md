@@ -57,42 +57,41 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 
     ```bash
     cat <<EOF | kubectl apply -f -
-    apiVersion: elasticsearch.k8s.elastic.co/v1beta1
+    apiVersion: elasticsearch.k8s.elastic.co/v1
     kind: Elasticsearch
     metadata:
-    name: elasticsearch
+        name: elasticsearch
     spec:
-    version: 7.4.2
-    nodeSets:
-        - name: masters
+      version: 7.5.2
+      nodeSets:
+      - name: default
         count: 1
         resources:
             requests:
-            memory: 1.5Gi
-            cpu: 1
+                memory: 1.5Gi
+                cpu: 1
             limits:
-            memory: 3Gi
-            cpu: 2
+                memory: 3Gi
+                cpu: 2
         config:
             node.master: true
             node.data: true
             node.ingest: true
             node.store.allow_mmap: false
-    # request 5Gi of persistent data storage for pods in this topology element
-    volumeClaimTemplates:
+        volumeClaimTemplates:
         - metadata:
             name: elasticsearch-data
-        spec:
-            accessModes:
-            - ReadWriteOnce
-            resources:
-            requests:
-                storage: 5Gi
+            spec:
+                accessModes:
+                - ReadWriteOnce
+                resources:
+                    requests:
+                        storeage: 10Gi
             storageClassName: standard
-    http:
-        tls:
-        selfSignedCertificate:
-            disabled: true
+        http:
+            tls:
+                selfSignedCertificate:
+                    disabled: true
     EOF
     ```
 
