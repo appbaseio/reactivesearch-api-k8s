@@ -28,7 +28,7 @@ spec:
               value: YOUR_ARC_ID
             - name: ES_CLUSTER_URL
               value: "http://elastic:PASSWORD@elasticsearch-es-http:9200/"
-          image: appbaseio/arc:7.23.1
+          image: appbaseio/arc:7.26.1
           imagePullPolicy: IfNotPresent
           name: arc
           ports:
