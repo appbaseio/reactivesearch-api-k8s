@@ -119,7 +119,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 
     > **Note:** Wait until health shows up as `green`. It can take upto 3-4 min.
 
-- **Step 5 -** Create Arc instance. Arc instance will enable you to access Appbase.io Dashboard. While following instance creation process, you will get an `ARC_ID` , which will help you successfully deploy Arc on the cluster.
+- **Step 5 -** Create Appbase.io instance. Appbase.io instance will enable you to access Appbase.io Dashboard. While following instance creation process, you will get an `ARC_ID` , which will help you successfully deploy Arc on the cluster.
   Follow the steps listed below to successfully create an Arc instance.
 
   - Go to [Appbase.io Dashboard](https://arc-dashboard.appbase.io/install)
