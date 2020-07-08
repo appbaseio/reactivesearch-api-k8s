@@ -212,7 +212,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
               - name: ELASTICSEARCH_USERNAME
                 value: elastic
               - name: ELASTICSEARCH_PASSWORD
-                value: jC79zch6K4r5L92tCSd4G3w4
+                value: ELASTICSEARCH_PASSWORD
             volumeMounts:
               - name: arcdata
                 mountPath: /mnt/data
@@ -244,6 +244,19 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 
     ```bash
     cat <<EOF | kubectl apply -f -
+    apiVersion: rbac.authorization.k8s.io/v1beta1
+    kind: ClusterRoleBinding
+    metadata:
+      name: fluent-bit-read
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: fluent-bit-read
+    subjects:
+      - kind: ServiceAccount
+        name: fluent-bit
+        namespace: default
+    ---
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -275,13 +288,21 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
                   value: "http://elastic:PASSWORD@elasticsearch-es-http:9200/"
                 - name: LOG_FILE_PATH
                   value: "/mnt/data/es.json"
-              image: appbaseio/arc:7.15.0
+              image: appbaseio/arc:7.28.3
               imagePullPolicy: IfNotPresent
               name: arc
               ports:
                 - containerPort: 8000
                   name: http
                   protocol: TCP
+              volumeMounts:
+                - name: arcdata
+                  mountPath: /mnt/data
+                  subPath: es.json
+          volumes:
+            - name: arcdata
+              persistentVolumeClaim:
+                claimName: nfs
       replicas: 1
     EOF
     ```
