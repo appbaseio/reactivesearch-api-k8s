@@ -244,19 +244,6 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 
     ```bash
     cat <<EOF | kubectl apply -f -
-    apiVersion: rbac.authorization.k8s.io/v1beta1
-    kind: ClusterRoleBinding
-    metadata:
-      name: fluent-bit-read
-    roleRef:
-      apiGroup: rbac.authorization.k8s.io
-      kind: ClusterRole
-      name: fluent-bit-read
-    subjects:
-      - kind: ServiceAccount
-        name: fluent-bit
-        namespace: default
-    ---
     apiVersion: apps/v1
     kind: Deployment
     metadata:
