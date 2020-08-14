@@ -64,7 +64,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
   metadata:
       name: elasticsearch
   spec:
-    version: 7.8.0
+    version: 7.8.1
     http:
       tls:
         selfSignedCertificate:
@@ -275,7 +275,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
                   value: "http://elastic:PASSWORD@elasticsearch-es-http:9200/"
                 - name: LOG_FILE_PATH
                   value: "/mnt/data/es.json"
-              image: appbaseio/arc:7.28.3
+              image: appbaseio/arc:7.31.0
               imagePullPolicy: IfNotPresent
               name: arc
               ports:
