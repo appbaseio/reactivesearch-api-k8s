@@ -242,13 +242,13 @@ spec:
               value: admin
             - name: PASSWORD
               value: admin
-            - name: ARC_ID
-              value: YOUR_ARC_ID
+            - name: APPBASE_ID
+              value: YOUR_APPBASE_ID
             - name: ES_CLUSTER_URL
               value: "http://elastic:ELASTICSEARCH_PASSWORD@elasticsearch-es-http:9200/"
             - name: LOG_FILE_PATH
               value: "/mnt/data/es.json"
-          image: appbaseio/arc:7.31.0
+          image: appbaseio/arc:7.31.1
           imagePullPolicy: IfNotPresent
           name: arc
           ports:

@@ -21,29 +21,28 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 
   _Here is an example on how you can create a cluster on Google Cloud._
 
+  > _Note: We assume that you have `gcloud` sdk installed on your machine, if not you can install from [here](https://cloud.google.com/sdk/install). Also you have a project on [Google Cloud](https://console.cloud.google.com/) with [Kubernetes Engine](https://console.cloud.google.com/apis/library/container.googleapis.com?q=kubernetes%20engine&_ga=2.12989943.-1532196267.1571335381) enabled_
 
-    >_Note: We assume that you have `gcloud` sdk installed on your machine, if not you can install from [here](https://cloud.google.com/sdk/install). Also you have a project on [Google Cloud](https://console.cloud.google.com/) with [Kubernetes Engine](https://console.cloud.google.com/apis/library/container.googleapis.com?q=kubernetes%20engine&_ga=2.12989943.-1532196267.1571335381) enabled_
+  _1. Login and Initialized Google Cloud_
 
-    _1. Login and Initialized Google Cloud_
+  ```bash
+  gcloud init
+  ```
 
-    ```bash
-    gcloud init
-    ```
+  _2. Create Cluster_
 
-    _2. Create Cluster_
+  ```bash
 
-    ```bash
+  gcloud container clusters create YOUR_CLUSTER_NAME --num-nodes 1 --machine-type  e2-standard-2 --zone us-east1-b --node-locations us-east1-b --cluster-version latest --network default --create-subnetwork range=/19 --enable-ip-alias --no-enable-autoupgrade --project YOUR_PROJECT
+  ```
 
-    gcloud container clusters create YOUR_CLUSTER_NAME --num-nodes 1 --machine-type  e2-standard-2 --zone us-east1-b --node-locations us-east1-b --cluster-version latest --network default --create-subnetwork range=/19 --enable-ip-alias --no-enable-autoupgrade --project YOUR_PROJECT
-    ```
+  _For more configuration options, you can go through `glcoud container cluster create` command [docs](https://cloud.google.com/sdk/gcloud/reference/container/clusters/create). Also in the above command, you can choose a different zone, machine size, number of nodes, etc based on your requirements._
 
-    _For more configuration options, you can go through `glcoud container cluster create` command [docs](https://cloud.google.com/sdk/gcloud/reference/container/clusters/create). Also in the above command, you can choose a different zone, machine size, number of nodes, etc based on your requirements._
+  _Once the cluster is created you will get cluster IP + status in output._
 
-    _Once the cluster is created you will get cluster IP + status in output._
+  ![](https://i.imgur.com/yq9gS3Y.png)
 
-    ![](https://i.imgur.com/yq9gS3Y.png)
-
-    >_Note: For GKE clusters you will need to have cluster admin role added. Following is the command: `kubectl create clusterrolebinding cluster-admin-binding --clusterrole cluster-admin`_
+  > _Note: For GKE clusters you will need to have cluster admin role added. Following is the command: `kubectl create clusterrolebinding cluster-admin-binding --clusterrole cluster-admin`_
 
 - **Step 2 -** Get custom resources for ECK k8s operator
 
@@ -116,10 +115,9 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 
   ![](https://i.imgur.com/ChTgd2v.png)
 
+  > **Note:** Wait until health shows up as `green`. It can take upto 3-4 min.
 
-    > **Note:** Wait until health shows up as `green`. It can take upto 3-4 min.
-
-- **Step 5 -** Create Appbase.io instance. Appbase.io instance will enable you to access Appbase.io Dashboard. While following instance creation process, you will get an `ARC_ID` , which will help you successfully deploy Arc on the cluster.
+- **Step 5 -** Create Appbase.io instance. Appbase.io instance will enable you to access Appbase.io Dashboard. While following instance creation process, you will get an `APPBASE_ID` , which will help you successfully deploy Arc on the cluster.
   Follow the steps listed below to successfully create an Arc instance.
 
   - Go to [Appbase.io Dashboard](https://arc-dashboard.appbase.io/install)
@@ -130,7 +128,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 
   - You will receive an OTP on an entered email address. Enter OTP to verify the email address.
 
-  - You will receive an email with ARC_ID which can be used with Arc configuration.
+  - You will receive an email with APPBASE_ID which can be used with Arc configuration.
 
 - **Step 6 -** Create disk for Appbase.io logs. Appbase.io internally uses [Fluentbit](https://docs.fluentbit.io/manual/installation/kubernetes) to log the requests and provide analytics on top of that.
 
@@ -148,12 +146,12 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 
 - **Step 7 -** Get Environment Variables. By now all the resources are deployed but Appbase.io service will need the following environment variables to start successfully.
 
-  - `ARC_ID`
+  - `APPBASE_ID`
   - `ES_CLUSTER_URL`
   - `USERNAME`
   - `PASSWORD`
 
-  We have already obtained ARC_ID , in step 5. Now we need ElasticSearch cluster URL, i.e. `ES_CLUSTER_URL`. Since we are using Kubernetes orchestration, we can connect to ElasticSearch using its service name and port number. But [ECK](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-quickstart.html) comes with [xpack](http://elastic.co/guide/en/elasticsearch/reference/current/security-settings.html) security which has basic auth enabled. So first let's get the user name password to successfully connect with ElasticSearch. Username here defaults to elastic , so we only need a way to get the password, which is stored in the secrets of Kubernetes.
+  We have already obtained APPBASE_ID , in step 5. Now we need ElasticSearch cluster URL, i.e. `ES_CLUSTER_URL`. Since we are using Kubernetes orchestration, we can connect to ElasticSearch using its service name and port number. But [ECK](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-quickstart.html) comes with [xpack](http://elastic.co/guide/en/elasticsearch/reference/current/security-settings.html) security which has basic auth enabled. So first let's get the user name password to successfully connect with ElasticSearch. Username here defaults to elastic , so we only need a way to get the password, which is stored in the secrets of Kubernetes.
 
   Here is the command to get the Password for ElasticSearch
 
@@ -241,76 +239,75 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 
 - **Step 9 -** Configure Environment Variables and Redeploy Arc. You can update values gathered in the above step in the following command and execute it
 
-
-    ```bash
-    cat <<EOF | kubectl apply -f -
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      annotations:
-        deployment.kubernetes.io/revision: "1"
-      generation: 1
-      name: arc
-    spec:
-      selector:
-        matchLabels:
+  ```bash
+  cat <<EOF | kubectl apply -f -
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+    generation: 1
+    name: arc
+  spec:
+    selector:
+      matchLabels:
+        app: arc
+    strategy:
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
           app: arc
-      strategy:
-        type: RollingUpdate
-      template:
-        metadata:
-          creationTimestamp: null
-          labels:
-            app: arc
-        spec:
-          containers:
-            - env:
-                - name: USERNAME
-                  value: admin
-                - name: PASSWORD
-                  value: admin
-                - name: ARC_ID
-                  value: YOUR_ARC_ID
-                - name: ES_CLUSTER_URL
-                  value: "http://elastic:PASSWORD@elasticsearch-es-http:9200/"
-                - name: LOG_FILE_PATH
-                  value: "/mnt/data/es.json"
-              image: appbaseio/arc:7.31.0
-              imagePullPolicy: IfNotPresent
-              name: arc
-              ports:
-                - containerPort: 8000
-                  name: http
-                  protocol: TCP
-              volumeMounts:
-                - name: arcdata
-                  mountPath: /mnt/data
-                  subPath: es.json
-          volumes:
-            - name: arcdata
-              persistentVolumeClaim:
-                claimName: nfs
-      replicas: 1
-    EOF
-    ```
+      spec:
+        containers:
+          - env:
+              - name: USERNAME
+                value: admin
+              - name: PASSWORD
+                value: admin
+              - name: APPBASE_ID
+                value: YOUR_APPBASE_ID
+              - name: ES_CLUSTER_URL
+                value: "http://elastic:PASSWORD@elasticsearch-es-http:9200/"
+              - name: LOG_FILE_PATH
+                value: "/mnt/data/es.json"
+            image: appbaseio/arc:7.31.0
+            imagePullPolicy: IfNotPresent
+            name: arc
+            ports:
+              - containerPort: 8000
+                name: http
+                protocol: TCP
+            volumeMounts:
+              - name: arcdata
+                mountPath: /mnt/data
+                subPath: es.json
+        volumes:
+          - name: arcdata
+            persistentVolumeClaim:
+              claimName: nfs
+    replicas: 1
+  EOF
+  ```
 
-    Now, we have successfully configured Arc. Let's test it. Following command will help you get the Load Balancer IP address using which our service can be accessed.
+  Now, we have successfully configured Arc. Let's test it. Following command will help you get the Load Balancer IP address using which our service can be accessed.
 
-    ```bash
-    kubectl get services ingress-nginx -n ingress-nginx
-    ```
+  ```bash
+  kubectl get services ingress-nginx -n ingress-nginx
+  ```
 
-    ![](https://i.imgur.com/sgI9FZk.png)
+  ![](https://i.imgur.com/sgI9FZk.png)
 
-    Now that we have external IP, let us execute the following command with correct IP which will help us get the cluster health and see if it is running correctly.
+  Now that we have external IP, let us execute the following command with correct IP which will help us get the cluster health and see if it is running correctly.
 
-    ```bash
-    curl http://YOUR_EXTERNAL_IP/_cluster/health\?pretty -u admin:admin
-    ```
+  ```bash
+  curl http://YOUR_EXTERNAL_IP/_cluster/health\?pretty -u admin:admin
+  ```
 
-    ![](https://i.imgur.com/SltUEFy.png)
+  ![](https://i.imgur.com/SltUEFy.png)
 
-    As you can see our ElasticSearch cluster is running with a healthy state, i.e. green , means we have successfully deployed ElasticSearch + Appbase.io services 🎉.
+  As you can see our ElasticSearch cluster is running with a healthy state, i.e. green , means we have successfully deployed ElasticSearch + Appbase.io services 🎉.
 
 - **Step 10 -** Configure TLS certificate + custom domain. We highly recommend using https enabled hosts so that you can seamlessly use your cluster with Appbase.io dashboard. For this, we have configured the Nginx server with reverse proxy to Appbase.io deployment.
 
@@ -374,6 +371,6 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
   🚀 Hurray! our deployment is complete.
 
 - **Step 11 -** Access Appbase.io Dashboard. Now that all our configurations are complete, in order to access all the Appbase.io Services, let us sign in to the [Arc dashboard](https://arc-dashboard.appbase.io/login).
-  - Visit https://arc-dashboard.appbase.io
+  - Visit <https://arc-dashboard.appbase.io>
   - Enter Arc URL, i.e. Cluster IP obtained in step 8or Domain configured on step 10.
   - Enter master credentials, i.e. username and password configured on step 7.
