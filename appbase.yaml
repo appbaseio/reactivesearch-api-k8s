@@ -248,7 +248,7 @@ spec:
               value: "http://elastic:ELASTICSEARCH_PASSWORD@elasticsearch-es-http:9200/"
             - name: LOG_FILE_PATH
               value: "/mnt/data/es.json"
-          image: appbaseio/arc:7.37.0
+          image: appbaseio/arc:7.38.0
           imagePullPolicy: IfNotPresent
           name: arc
           ports:
