@@ -245,18 +245,18 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
     annotations:
       deployment.kubernetes.io/revision: "1"
     generation: 1
-    name: arc
+    name: appbase
   spec:
     selector:
       matchLabels:
-        app: arc
+        app: appbase
     strategy:
       type: RollingUpdate
     template:
       metadata:
         creationTimestamp: null
         labels:
-          app: arc
+          app: appbase
       spec:
         containers:
           - env:
@@ -272,7 +272,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
                 value: "/var/log/es.json"
             image: appbaseio/arc:7.45.0
             imagePullPolicy: IfNotPresent
-            name: arc
+            name: appbase
             ports:
               - containerPort: 8000
                 name: http
@@ -333,14 +333,14 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
       nginx.ingress.kubernetes.io/rewrite-target: /
       nginx.ingress.kubernetes.io/ssl-redirect: "false"
     generation: 2
-    name: arc-ingress
+    name: appbase-ingress
     namespace: default
   spec:
     rules:
       - http:
           paths:
             - backend:
-                serviceName: arc
+                serviceName: appbase
                 servicePort: 8000
               path: /
         # host: es.mydomain.com
