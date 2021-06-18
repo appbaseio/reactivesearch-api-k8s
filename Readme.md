@@ -271,7 +271,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
               - name: ES_CLUSTER_URL
                 value: "http://elastic:PASSWORD@elasticsearch-es-http:9200/"
               - name: LOG_FILE_PATH
-                value: "/mnt/data/es.json"
+                value: "/var/log/es.json"
             image: appbaseio/arc:7.45.0
             imagePullPolicy: IfNotPresent
             name: arc
@@ -280,13 +280,16 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
                 name: http
                 protocol: TCP
             volumeMounts:
-              - name: arcdata
-                mountPath: /mnt/data
+              - name: varlog
+                mountPath: /var/log
                 subPath: es.json
         volumes:
-          - name: arcdata
-            persistentVolumeClaim:
-              claimName: nfs
+          - name: varlog
+            hostPath:
+              path: /var/log
+          - name: varlibdockercontainers
+            hostPath:
+              path: /var/lib/docker/containers
     replicas: 1
   EOF
   ```

@@ -1,81 +1,4 @@
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nfs-server
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      role: nfs-server
-  template:
-    metadata:
-      labels:
-        role: nfs-server
-    spec:
-      containers:
-        - name: nfs-server
-          image: gcr.io/google_containers/volume-nfs:0.8
-          ports:
-            - name: nfs
-              containerPort: 2049
-            - name: mountd
-              containerPort: 20048
-            - name: rpcbind
-              containerPort: 111
-          securityContext:
-            privileged: true
-          volumeMounts:
-            - mountPath: /exports
-              name: arcdata
-      volumes:
-        - name: arcdata
-          gcePersistentDisk:
-            pdName: arc-logs-disk
-            fsType: ext4
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nfs-server
-spec:
-  # clusterIP: 10.3.240.20
-  ports:
-    - name: nfs
-      port: 2049
-    - name: mountd
-      port: 20048
-    - name: rpcbind
-      port: 111
-  selector:
-    role: nfs-server
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: nfs
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteMany
-  nfs:
-    server: nfs-server.default.svc.cluster.local
-    path: "/"
-
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: nfs
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: ""
-  resources:
-    requests:
-      storage: 1Gi
----
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -86,11 +9,11 @@ kind: ClusterRole
 metadata:
   name: fluent-bit-read
 rules:
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - namespaces
       - pods
-    verbs: ["get", "list", "watch"]
+    verbs: ['get', 'list', 'watch']
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -107,7 +30,7 @@ data:
       Parsers_File parsers.conf
     [INPUT]
       Name              tail
-      Path              /mnt/data/es.json
+      Path              /var/log/es.json
       Buffer_Chunk_Size 3MB
       Buffer_Max_Size   487MB
     [FILTER]
@@ -149,7 +72,7 @@ metadata:
   labels:
     k8s-app: fluent-bit-logging
     version: v1
-    kubernetes.io/cluster-service: "true"
+    kubernetes.io/cluster-service: 'true'
 spec:
   selector:
     matchLabels:
@@ -159,10 +82,10 @@ spec:
       labels:
         k8s-app: fluent-bit-logging
         version: v1
-        kubernetes.io/cluster-service: "true"
+        kubernetes.io/cluster-service: 'true'
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "2020"
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '2020'
         prometheus.io/path: /api/v1/metrics/prometheus
     spec:
       containers:
@@ -173,24 +96,27 @@ spec:
             - containerPort: 2020
           env:
             - name: ELASTICSEARCH_HOST
-              value: "elasticsearch-es-http"
+              value: 'elasticsearch-es-http'
             - name: ELASTICSEARCH_PORT
-              value: "9200"
+              value: '9200'
             - name: ELASTICSEARCH_USERNAME
               value: elastic
             - name: ELASTICSEARCH_PASSWORD
               value: ELASTICSEARCH_PASSWORD
           volumeMounts:
-            - name: arcdata
-              mountPath: /mnt/data
+            - name: varlog
+              mountPath: /var/log
               subPath: es.json
             - name: fluent-bit-config
               mountPath: /fluent-bit/etc/
       terminationGracePeriodSeconds: 10
       volumes:
-        - name: arcdata
-          persistentVolumeClaim:
-            claimName: nfs
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: varlibdockercontainers
+          hostPath:
+            path: /var/lib/docker/containers
         - name: fluent-bit-config
           configMap:
             name: fluent-bit-config
@@ -199,10 +125,10 @@ spec:
         - key: node-role.kubernetes.io/master
           operator: Exists
           effect: NoSchedule
-        - operator: "Exists"
-          effect: "NoExecute"
-        - operator: "Exists"
-          effect: "NoSchedule"
+        - operator: 'Exists'
+          effect: 'NoExecute'
+        - operator: 'Exists'
+          effect: 'NoSchedule'
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
@@ -221,7 +147,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    deployment.kubernetes.io/revision: "1"
+    deployment.kubernetes.io/revision: '1'
   generation: 1
   name: arc
 spec:
@@ -245,9 +171,9 @@ spec:
             - name: APPBASE_ID
               value: YOUR_APPBASE_ID
             - name: ES_CLUSTER_URL
-              value: "http://elastic:ELASTICSEARCH_PASSWORD@elasticsearch-es-http:9200/"
+              value: 'http://elastic:ELASTICSEARCH_PASSWORD@elasticsearch-es-http:9200/'
             - name: LOG_FILE_PATH
-              value: "/mnt/data/es.json"
+              value: '/var/log/es.json'
           image: appbaseio/arc:7.45.0
           imagePullPolicy: IfNotPresent
           name: arc
@@ -256,13 +182,16 @@ spec:
               name: http
               protocol: TCP
           volumeMounts:
-            - name: arcdata
-              mountPath: /mnt/data
+            - name: varlog
+              mountPath: /var/log
               subPath: es.json
       volumes:
-        - name: arcdata
-          persistentVolumeClaim:
-            claimName: nfs
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: varlibdockercontainers
+          hostPath:
+            path: /var/lib/docker/containers
   replicas: 1
 ---
 apiVersion: v1
@@ -310,7 +239,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    deployment.kubernetes.io/revision: "1"
+    deployment.kubernetes.io/revision: '1'
   generation: 1
   labels:
     app: default-http-backend
@@ -387,7 +316,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    deployment.kubernetes.io/revision: "1"
+    deployment.kubernetes.io/revision: '1'
   generation: 1
   name: nginx-ingress-controller
   namespace: ingress-nginx
@@ -406,8 +335,8 @@ spec:
   template:
     metadata:
       annotations:
-        prometheus.io/port: "10254"
-        prometheus.io/scrape: "true"
+        prometheus.io/port: '10254'
+        prometheus.io/scrape: 'true'
       creationTimestamp: null
       labels:
         app: ingress-nginx
@@ -473,18 +402,18 @@ kind: Ingress
 metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "false"
+    kubernetes.io/tls-acme: 'false'
     nginx.ingress.kubernetes.io/configuration-snippet: |
       add_header 'access-control-expose-headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,X-Search-Id' always;
-    nginx.ingress.kubernetes.io/cors-allow-credentials: "false"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: 'false'
     nginx.ingress.kubernetes.io/cors-allow-headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Search-Id,X-Search-Click,X-Search-ClickPosition,X-Search-Suggestions-Click,X-Search-Suggestions-ClickPosition,X-Search-Conversion,X-Search-Query,X-Search-Filters,X-Request-Tag,X-Query-Tag,X-Search-State,X-Search-CustomEvent,X-User-Id
     nginx.ingress.kubernetes.io/cors-allow-methods:
       GET, PUT, POST, DELETE, PATCH,
       OPTIONS, HEAD
-    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/enable-cors: 'true'
     nginx.ingress.kubernetes.io/proxy-body-size: 100m
     nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
   generation: 2
   name: arc-ingress
   namespace: default
@@ -505,7 +434,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: "2019-11-15T12:58:42Z"
+  creationTimestamp: '2019-11-15T12:58:42Z'
   labels:
     app: ingress-nginx
   name: ingress-nginx
