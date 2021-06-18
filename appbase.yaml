@@ -443,12 +443,10 @@ spec:
   externalTrafficPolicy: Cluster
   ports:
     - name: http
-      nodePort: 30372
       port: 80
       protocol: TCP
       targetPort: http
     - name: https
-      nodePort: 31473
       port: 443
       protocol: TCP
       targetPort: https
