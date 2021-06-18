@@ -212,16 +212,19 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
               - name: ELASTICSEARCH_PASSWORD
                 value: ELASTICSEARCH_PASSWORD
             volumeMounts:
-              - name: arcdata
-                mountPath: /mnt/data
+              - name: varlog
+                mountPath: /var/log
                 subPath: es.json
               - name: fluent-bit-config
                 mountPath: /fluent-bit/etc/
         terminationGracePeriodSeconds: 10
         volumes:
-          - name: arcdata
-            persistentVolumeClaim:
-              claimName: nfs
+          - name: varlog
+            hostPath:
+              path: /var/log
+          - name: varlibdockercontainers
+            hostPath:
+              path: /var/lib/docker/containers
           - name: fluent-bit-config
             configMap:
               name: fluent-bit-config
