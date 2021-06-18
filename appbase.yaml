@@ -149,18 +149,18 @@ metadata:
   annotations:
     deployment.kubernetes.io/revision: '1'
   generation: 1
-  name: arc
+  name: appbase
 spec:
   selector:
     matchLabels:
-      app: arc
+      app: appbase
   strategy:
     type: RollingUpdate
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: arc
+        app: appbase
     spec:
       containers:
         - env:
@@ -176,7 +176,7 @@ spec:
               value: '/var/log/es.json'
           image: appbaseio/arc:7.45.0
           imagePullPolicy: IfNotPresent
-          name: arc
+          name: appbase
           ports:
             - containerPort: 8000
               name: http
@@ -197,15 +197,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: arc
+  name: appbase
   labels:
-    app: arc
+    app: appbase
 spec:
   ports:
     - port: 8000
       targetPort: 8000
   selector:
-    app: arc
+    app: appbase
 ---
 apiVersion: v1
 kind: Secret
@@ -397,7 +397,7 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
@@ -415,20 +415,23 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: 'false'
   generation: 2
-  name: arc-ingress
+  name: appbase-ingress
   namespace: default
 spec:
   rules:
     - http:
         paths:
           - backend:
-              serviceName: arc
-              servicePort: 8000
+              service:
+                name: appbase
+                port:
+                  number: 8000
             path: /
-      # host: es.mydomain.com
+            pathType: Prefix
+      # host: k8s-test.searchbase.io
   tls:
-    #- hosts:
-    #  - es.mydomain.com
+    # - hosts:
+    #  - k8s-test.searchbase.io
     - secretName: ssl
 ---
 apiVersion: v1

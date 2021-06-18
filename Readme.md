@@ -130,13 +130,8 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 
   - You will receive an email with APPBASE_ID which can be used with Arc configuration.
 
-- **Step 6 -** Create disk for Appbase.io logs. Appbase.io internally uses [Fluentbit](https://docs.fluentbit.io/manual/installation/kubernetes) to log the requests and provide analytics on top of that.
 
-  ```
-  gcloud compute disks create --size=1GB --zone=us-east1-b arc-logs-disk
-  ```
-
-- **Step 7 -** Deploy Appbase.io
+- **Step 6 -** Deploy Appbase.io
 
   ```bash
   kubectl apply -f https://raw.githubusercontent.com/appbaseio/arc-k8s/master/appbase.yaml
