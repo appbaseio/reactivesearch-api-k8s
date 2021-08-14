@@ -117,10 +117,10 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 
   > **Note:** Wait until health shows up as `green`. It can take upto 3-4 min.
 
-- **Step 5 -** Create Appbase.io instance. Appbase.io instance will enable you to access Appbase.io Dashboard. While following instance creation process, you will get an `APPBASE_ID` , which will help you successfully deploy Arc on the cluster.
-  Follow the steps listed below to successfully create an Arc instance.
+- **Step 5 -** Create Appbase.io instance. Appbase.io instance will enable you to access Appbase.io Dashboard. While following instance creation process, you will get an `APPBASE_ID` , which will help you successfully deploy appbase.io on the cluster.
+  Follow the steps listed below to successfully create an appbase.io instance.
 
-  - Go to [Appbase.io Dashboard](https://arc-dashboard.appbase.io/install)
+  - Go to [Appbase.io Dashboard](https://dash.appbase.io/install)
 
   ![](https://i.imgur.com/qVSHx0F.png)
 
@@ -128,7 +128,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 
   - You will receive an OTP on an entered email address. Enter OTP to verify the email address.
 
-  - You will receive an email with APPBASE_ID which can be used with Arc configuration.
+  - You will receive an email with APPBASE_ID which can be used with Appbase.io configuration.
 
 
 - **Step 6 -** Deploy Appbase.io
@@ -235,7 +235,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
   EOF
   ```
 
-- **Step 9 -** Configure Environment Variables and Redeploy Arc. You can update values gathered in the above step in the following command and execute it
+- **Step 9 -** Configure Environment Variables and redeploy appbase. You can update values gathered in the above step in the following command and execute it
 
   ```bash
   cat <<EOF | kubectl apply -f -
@@ -270,7 +270,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
                 value: "http://elastic:PASSWORD@elasticsearch-es-http:9200/"
               - name: LOG_FILE_PATH
                 value: "/var/log/es.json"
-            image: appbaseio/arc:7.45.0
+            image: appbaseio/reactivesearch-api:7.47.0
             imagePullPolicy: IfNotPresent
             name: appbase
             ports:
@@ -292,7 +292,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
   EOF
   ```
 
-  Now, we have successfully configured Arc. Let's test it. Following command will help you get the Load Balancer IP address using which our service can be accessed.
+  Now, we have successfully configured appbase. Let's test it. Following command will help you get the Load Balancer IP address using which our service can be accessed.
 
   ```bash
   kubectl get services ingress-nginx -n ingress-nginx
@@ -351,7 +351,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
   EOF
   ```
 
-  > Note: if you do not update the host, then also you will be able to access the Arc URL using Load Balancer IP.
+  > Note: if you do not update the host, then also you will be able to access the appbase URL using Load Balancer IP.
 
   You can update the [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) certificate, Key and Root CA values in the following command and execute it so that the correct certificate is attached to your domain. Make sure that the values of certificates and keys are encoded in base64.
 
@@ -371,7 +371,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
 
   🚀 Hurray! our deployment is complete.
 
-- **Step 11 -** Access Appbase.io Dashboard. Now that all our configurations are complete, in order to access all the Appbase.io Services, let us sign in to the [Arc dashboard](https://arc-dashboard.appbase.io/login).
-  - Visit <https://arc-dashboard.appbase.io>
-  - Enter Arc URL, i.e. Cluster IP obtained in step 8or Domain configured on step 10.
+- **Step 11 -** Access Appbase.io Dashboard. Now that all our configurations are complete, in order to access all the Appbase.io Services, let us sign in to the [appbase.io dashboard](https://dash.appbase.io/login).
+  - Visit <https://dash.appbase.io>
+  - Enter appbase URL, i.e. Cluster IP obtained in step 8 or domain configured on step 10.
   - Enter master credentials, i.e. username and password configured on step 7.
