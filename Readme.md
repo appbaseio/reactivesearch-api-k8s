@@ -322,9 +322,9 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "false"
       nginx.ingress.kubernetes.io/configuration-snippet: |
-        add_header 'access-control-expose-headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,X-Search-Id,X-Enable-Telemetry,X-Timestamp' always;
+        add_header 'access-control-expose-headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,X-Search-Id,X-Search-Click,X-Search-ClickPosition,X-Search-Suggestions-Click,X-Search-Suggestions-ClickPosition,X-Search-Conversion,X-Search-Query,X-Search-Filters,X-Request-Tag,X-Query-Tag,X-Search-State,X-Search-CustomEvent,X-User-Id,X-Search-Client,X-Enable-Telemetry,X-Timestamp' always;
       nginx.ingress.kubernetes.io/cors-allow-credentials: "false"
-      nginx.ingress.kubernetes.io/cors-allow-headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Search-Id,X-Search-Click,X-Search-ClickPosition,X-Search-Suggestions-Click,X-Search-Suggestions-ClickPosition,X-Search-Conversion,X-Search-Query,X-Search-Filters,X-Request-Tag,X-Query-Tag,X-Search-State,X-Search-CustomEvent,X-User-Id,X-Enable-Telemetry,X-Timestamp
+      nginx.ingress.kubernetes.io/cors-allow-headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Search-Id,X-Search-Click,X-Search-ClickPosition,X-Search-Suggestions-Click,X-Search-Suggestions-ClickPosition,X-Search-Conversion,X-Search-Query,X-Search-Filters,X-Request-Tag,X-Query-Tag,X-Search-State,X-Search-CustomEvent,X-User-Id,X-Search-Client,X-Enable-Telemetry,X-Timestamp
       nginx.ingress.kubernetes.io/cors-allow-methods:
         GET, PUT, POST, DELETE, PATCH,
         OPTIONS, HEAD
