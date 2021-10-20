@@ -174,7 +174,7 @@ spec:
               value: 'http://elastic:ELASTICSEARCH_PASSWORD@elasticsearch-es-http:9200/'
             - name: LOG_FILE_PATH
               value: '/var/log/es.json'
-          image: appbaseio/reactivesearch-api:7.48.0
+          image: appbaseio/reactivesearch-api:7.50.0
           imagePullPolicy: IfNotPresent
           name: appbase
           ports:
@@ -404,9 +404,9 @@ metadata:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: 'false'
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      add_header 'access-control-expose-headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,X-Search-Id,X-Search-Client,X-Enable-Telemetry' always;
+      add_header 'access-control-expose-headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,X-Search-Id,X-Search-Client,X-Enable-Telemetry,X-Timestamp' always;
     nginx.ingress.kubernetes.io/cors-allow-credentials: "false"
-    nginx.ingress.kubernetes.io/cors-allow-headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Search-Id,X-Search-Click,X-Search-ClickPosition,X-Search-Suggestions-Click,X-Search-Suggestions-ClickPosition,X-Search-Conversion,X-Search-Query,X-Search-Filters,X-Request-Tag,X-Query-Tag,X-Search-State,X-Search-CustomEvent,X-User-Id,X-Search-Client,X-Enable-Telemetry
+    nginx.ingress.kubernetes.io/cors-allow-headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Search-Id,X-Search-Click,X-Search-ClickPosition,X-Search-Suggestions-Click,X-Search-Suggestions-ClickPosition,X-Search-Conversion,X-Search-Query,X-Search-Filters,X-Request-Tag,X-Query-Tag,X-Search-State,X-Search-CustomEvent,X-User-Id,X-Search-Client,X-Enable-Telemetry,X-Timestamp
     nginx.ingress.kubernetes.io/cors-allow-methods:
       GET, PUT, POST, DELETE, PATCH,
       OPTIONS, HEAD
