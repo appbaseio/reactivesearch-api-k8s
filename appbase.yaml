@@ -174,7 +174,7 @@ spec:
               value: 'http://elastic:ELASTICSEARCH_PASSWORD@elasticsearch-es-http:9200/'
             - name: LOG_FILE_PATH
               value: '/var/log/es.json'
-          image: appbaseio/reactivesearch-api:7.54.1
+          image: appbaseio/reactivesearch-api:7.55.0
           imagePullPolicy: IfNotPresent
           name: appbase
           ports:
