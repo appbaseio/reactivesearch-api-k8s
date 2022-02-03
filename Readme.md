@@ -270,7 +270,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
                 value: "http://elastic:PASSWORD@elasticsearch-es-http:9200/"
               - name: LOG_FILE_PATH
                 value: "/var/log/es.json"
-            image: appbaseio/reactivesearch-api:7.55.1
+            image: appbaseio/reactivesearch-api:7.57.0
             imagePullPolicy: IfNotPresent
             name: appbase
             ports:
