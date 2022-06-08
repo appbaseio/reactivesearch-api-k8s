@@ -193,7 +193,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
       spec:
         containers:
           - name: fluent-bit
-            image: fluent/fluent-bit:1.3.11
+            image: fluent/fluent-bit:1.9.4
             imagePullPolicy: Always
             ports:
               - containerPort: 2020
@@ -270,7 +270,7 @@ This example demonstrates how you can deploy ElasticSearch kubernetes operator, 
                 value: "http://elastic:PASSWORD@elasticsearch-es-http:9200/"
               - name: LOG_FILE_PATH
                 value: "/var/log/es.json"
-            image: appbaseio/reactivesearch-api:8.0.0
+            image: appbaseio/reactivesearch-api:8.2.0
             imagePullPolicy: IfNotPresent
             name: appbase
             ports:
